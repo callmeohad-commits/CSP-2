@@ -1,0 +1,102 @@
+name: CSP optimizer
+
+on:
+  workflow_dispatch:
+    inputs:
+      capital:
+        description: "הון (USD)"
+        required: true
+        default: "250000"
+      risk:
+        description: "רמת סיכון"
+        type: choice
+        options: [very_low, low, medium, high]
+        default: low
+      objective:
+        description: "max_premium = פרמיה מקסימלית | target = מינימום סיכון ליעד"
+        type: choice
+        options: [max_premium, target]
+        default: max_premium
+      target:
+        description: "יעד תשואה שנתית על ההון (רק ל-target), למשל 0.10"
+        required: false
+        default: ""
+      overrides:
+        description: 'עקיפת פרמטרי סיכון ב-JSON, למשל {"max_delta":0.15,"max_dte":30}'
+        required: false
+        default: ""
+      tickers:
+        description: "רשימת מניות (ריק = config/universe.csv)"
+        required: false
+        default: ""
+      provider:
+        description: "מקור נתונים"
+        type: choice
+        options: [auto, barchart, tradier, marketdata, yfinance, cboe]
+        default: auto
+      commit_results:
+        description: "לשמור את הדוח בריפו (results/)"
+        type: boolean
+        default: false
+  schedule:
+    # Mon-Fri 16:30 UTC = 11:30 New York in winter (12:30 in summer), market open
+    - cron: "30 16 * * 1-5"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: csp-optimizer
+  cancel-in-progress: false
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BARCHART_API_KEY: ${{ secrets.BARCHART_API_KEY }}
+      TRADIER_TOKEN: ${{ secrets.TRADIER_TOKEN }}
+      TRADIER_SANDBOX: ${{ vars.TRADIER_SANDBOX }}
+      MARKETDATA_TOKEN: ${{ secrets.MARKETDATA_TOKEN }}
+      # scheduled runs use repo variables (Settings > Variables) or these defaults
+      CAPITAL: ${{ inputs.capital || vars.CSP_CAPITAL || '250000' }}
+      RISK: ${{ inputs.risk || vars.CSP_RISK || 'low' }}
+      OBJECTIVE: ${{ inputs.objective || 'max_premium' }}
+      TARGET: ${{ inputs.target }}
+      OVERRIDES: ${{ inputs.overrides || vars.CSP_OVERRIDES }}
+      TICKERS: ${{ inputs.tickers || vars.CSP_TICKERS }}
+      PROVIDER: ${{ inputs.provider || vars.CSP_PROVIDER || 'auto' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Run optimizer
+        run: |
+          args=(--capital "$CAPITAL" --risk "$RISK" --objective "$OBJECTIVE" --provider "$PROVIDER")
+          [ -n "$TARGET" ]    && args+=(--target "$TARGET")
+          [ -n "$OVERRIDES" ] && args+=(--overrides "$OVERRIDES")
+          [ -n "$TICKERS" ]   && args+=(--tickers "$TICKERS")
+          python run.py "${args[@]}"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: csp-${{ github.run_number }}
+          path: output/
+          retention-days: 30
+
+      - name: Commit report
+        if: inputs.commit_results || github.event_name == 'schedule'
+        run: |
+          d=results/$(TZ=America/New_York date +%Y-%m-%d_%H%M)
+          mkdir -p "$d" && cp output/report.md output/portfolio.csv output/summary.json "$d"/
+          cp output/report.md results/LATEST.md
+          git config user.name  "csp-bot"
+          git config user.email "csp-bot@users.noreply.github.com"
+          git add results && git commit -m "CSP report $d" && git push || echo "nothing to commit"

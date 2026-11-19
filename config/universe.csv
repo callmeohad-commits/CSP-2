@@ -1,0 +1,30 @@
+ticker,sector,beta_fallback
+AAPL,Technology,1.20
+MSFT,Technology,0.95
+NVDA,Technology,1.70
+AVGO,Technology,1.30
+ORCL,Technology,1.10
+AMD,Technology,1.80
+CRM,Technology,1.25
+GOOGL,Communication,1.05
+META,Communication,1.25
+NFLX,Communication,1.25
+AMZN,Consumer Discretionary,1.20
+TSLA,Consumer Discretionary,2.00
+HD,Consumer Discretionary,1.00
+JPM,Financials,1.05
+BAC,Financials,1.25
+V,Financials,0.90
+MA,Financials,1.00
+LLY,Health Care,0.45
+UNH,Health Care,0.60
+JNJ,Health Care,0.50
+ABBV,Health Care,0.55
+MRK,Health Care,0.40
+XOM,Energy,0.85
+CVX,Energy,0.90
+WMT,Consumer Staples,0.55
+COST,Consumer Staples,0.80
+PG,Consumer Staples,0.45
+KO,Consumer Staples,0.55
+PEP,Consumer Staples,0.50
