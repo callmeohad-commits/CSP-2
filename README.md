@@ -43,6 +43,21 @@
    ערכי ברירת המחדל של ההרצה המתוזמנת נקבעים ב-Variables: `CSP_CAPITAL`, `CSP_RISK`,
    `CSP_OVERRIDES`, `CSP_TICKERS`, `CSP_PROVIDER`.
 
+## אפליקציית Streamlit (ממשק אינטראקטיבי)
+
+`app.py` הוא ממשק בדפדפן: בוחרים הון, רמת סיכון ומניות, מכווינים כל פרמטר סיכון עם סליידרים,
+ורואים את התמהיל, ההון הנדרש, השוואה בין רמות הסיכון ו-Monte Carlo. הנתונים נשמרים במטמון ל-15 דקות,
+כך ששינוי פרמטרים לא שולף אותם מחדש.
+
+**העלאה ל-Streamlit Community Cloud (חינם):**
+1. נכנסים ל-https://share.streamlit.io ומתחברים עם GitHub.
+2. **Create app → Deploy a public app from GitHub**, ובוחרים: Repository = הריפו הזה, Branch = `main`, Main file = `app.py`.
+3. ב-**Advanced settings**: Python 3.12, ובשדה **Secrets** מדביקים (ראו `.streamlit/secrets.toml.example`):
+   `TRADIER_TOKEN = "..."`
+4. **Deploy**. אחרי 2–3 דקות מתקבלת כתובת קבועה.
+
+הרצה מקומית: `pip install -r requirements.txt` ואז `streamlit run app.py`.
+
 ## רמות הסיכון
 
 | פרמטר | very_low | low | medium | high |
