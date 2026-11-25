@@ -1,0 +1,68 @@
+{
+  "status": "max_premium",
+  "params": {
+    "capital": 250000.0,
+    "objective": "max_premium",
+    "target": null
+  },
+  "profile": {
+    "name": "low",
+    "max_delta": 0.2,
+    "max_avg_delta": 0.16,
+    "min_dte": 14,
+    "max_dte": 45,
+    "max_weight_ticker": 0.2,
+    "max_weight_sector": 0.35,
+    "cash_buffer": 0.1,
+    "stress_shock": 0.2,
+    "max_stress_loss": 0.08,
+    "gap_shock": 0.25,
+    "max_gap_loss": 0.025,
+    "min_cushion": 0.05,
+    "min_tickers": 5,
+    "max_spread_pct": 0.12,
+    "min_open_interest": 300,
+    "avoid_earnings": true
+  },
+  "summary": {
+    "profile": "low",
+    "capital": 250000.0,
+    "contracts": 17,
+    "lines": 8,
+    "tickers": 7,
+    "capital_required": 223150.0,
+    "cash_free": 26850.0,
+    "utilization": 0.8926,
+    "premium_collected": 2830.45,
+    "ann_premium": 53189.82336956521,
+    "ann_yield_on_capital": 0.21275929347826084,
+    "ann_yield_on_collateral": 0.23835905610381003,
+    "avg_delta": 0.15394050081088634,
+    "avg_dte": 21.519381581895587,
+    "avg_cushion": 0.11753803928719374,
+    "stress_loss": 19884.076530058403,
+    "stress_loss_pct": 0.07953630612023362,
+    "worst_gap_loss_pct": 0.024845698718261717,
+    "max_sector_weight": 0.296,
+    "expected_edge_ann": 0.13570620983931123
+  },
+  "monte_carlo": {
+    "sims": 20000,
+    "expected_pnl": 1858.692374218226,
+    "p_loss": 0.1111,
+    "p_any_assignment": 0.4314,
+    "expected_assigned": 1.4528,
+    "VaR95": 2151.310209183994,
+    "CVaR95": 5699.562311220615,
+    "VaR99": 7687.048542674702,
+    "CVaR99": 11659.430214982773,
+    "worst": 55712.78238421882
+  },
+  "warnings": [],
+  "meta": {
+    "sources": "yfinance",
+    "fetched_at": "2026-11-25T12:25-05:00",
+    "n_contracts": 5472,
+    "n_eligible": 117
+  }
+}
